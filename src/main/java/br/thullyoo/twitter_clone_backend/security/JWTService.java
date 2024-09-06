@@ -1,11 +1,8 @@
 package br.thullyoo.twitter_clone_backend.security;
 
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jwt.JWT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
