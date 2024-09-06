@@ -18,13 +18,17 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO) // Ajuste para AUTO se UUID não estiver sendo gerado corretamente
     private UUID id;
 
+
+    @Column(nullable = false, unique = true)
+    private String nickname;
+
     @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @OneToMany(mappedBy = "user")

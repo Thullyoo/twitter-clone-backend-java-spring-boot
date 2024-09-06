@@ -25,6 +25,9 @@ public class UserServiceImpl implements UserService {
         if(this.userRepository.findByEmail(userRequest.email()).isPresent()){
             throw new RuntimeException("Email já cadastrado");
         }
+        if (this.userRepository.findByNickname(userRequest.nickname()).isPresent()){
+            throw new RuntimeException("Nickname já cadastrado");
+        }
         User user = this.userRepository.save(userMapper.toUser(userRequest));
         return userMapper.toUserResponse(user);
     }
