@@ -9,6 +9,9 @@ import br.thullyoo.twitter_clone_backend.domain.repository.TweetRepository;
 import br.thullyoo.twitter_clone_backend.domain.repository.UserRepository;
 import br.thullyoo.twitter_clone_backend.service.TweetService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -41,5 +44,13 @@ public class TweetServiceImpl implements TweetService {
 
         return tweetMapper.toTweetResponse(tweet);
 
+    }
+
+    @Override
+    public Page<TweetResponse> getAllTweets() {
+        Pageable pageable = PageRequest.of(0, 10);
+        return this.tweetRepository.findAll(pageable).map(tweet -> {
+            return  tweetMapper.toTweetResponse(tweet);
+        });
     }
 }
