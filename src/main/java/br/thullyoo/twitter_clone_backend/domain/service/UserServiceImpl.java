@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Nickname já cadastrado");
         }
         User user = userMapper.toUser(userRequest);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(userRequest.password()));
         Role role = roleRepository.findById(0).get();
         HashSet<Role> roles = new HashSet<>();
         roles.add(role);
