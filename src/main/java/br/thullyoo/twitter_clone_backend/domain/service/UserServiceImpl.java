@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.toUser(userRequest);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         Role role = roleRepository.findById(0).get();
-        HashSet roles = new HashSet();
+        HashSet<Role> roles = new HashSet<>();
         roles.add(role);
         user.setRoles(roles);
         this.userRepository.save(user);
