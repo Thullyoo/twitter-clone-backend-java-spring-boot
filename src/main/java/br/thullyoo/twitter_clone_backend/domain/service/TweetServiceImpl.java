@@ -8,6 +8,7 @@ import br.thullyoo.twitter_clone_backend.domain.entity.User;
 import br.thullyoo.twitter_clone_backend.domain.repository.TweetRepository;
 import br.thullyoo.twitter_clone_backend.domain.repository.UserRepository;
 import br.thullyoo.twitter_clone_backend.service.TweetService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class TweetServiceImpl implements TweetService {
@@ -31,6 +33,7 @@ public class TweetServiceImpl implements TweetService {
 
 
     @Override
+    @Transactional
     public TweetResponse registerTweet(TweetRequest request) {
 
         Optional<User> user = this.userRepository.findById(request.id_user());
@@ -48,12 +51,30 @@ public class TweetServiceImpl implements TweetService {
     }
 
     @Override
-    @PreAuthorize("hasRole('COMMON')")
+    @PreAuthorize("hasAuthority('SCOPE_common')")
     public Page<TweetResponse> getAllTweets() {
         Pageable pageable = PageRequest.of(0, 10);
         return this.tweetRepository.findAll(pageable).map(tweet -> {
             return  tweetMapper.toTweetResponse(tweet);
         });
+    }
+
+    @Override
+    @Transactional
+    public void deleteTweet(int tweet_id, UUID user_id) {
+        Optional<User> user = userRepository.findById(user_id);
+        if (user.isEmpty()){
+            throw new RuntimeException("Usuário não encontrado");
+        }
+        Optional<Tweet> tweet = user.get().getTweets().stream()
+                .filter(tweet1 -> tweet1.getId() == tweet_id)
+                .findFirst();
+
+        if (tweet.isEmpty()){
+            throw new RuntimeException("Tweet inexistente ou de outra pessoa");
+        }
+
+        tweetRepository.delete(tweet.get());
     }
 
 }
