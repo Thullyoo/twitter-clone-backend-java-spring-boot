@@ -51,7 +51,6 @@ public class TweetServiceImpl implements TweetService {
     }
 
     @Override
-    @PreAuthorize("hasAuthority('SCOPE_common')")
     public Page<TweetResponse> getAllTweets() {
         Pageable pageable = PageRequest.of(0, 10);
         return this.tweetRepository.findAll(pageable).map(tweet -> {
