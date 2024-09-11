@@ -14,6 +14,7 @@ import java.util.UUID;
 
 @RestController()
 @RequestMapping("/tweet")
+@CrossOrigin(origins = "http://localhost:4200")
 public class TweetController {
 
     @Autowired
