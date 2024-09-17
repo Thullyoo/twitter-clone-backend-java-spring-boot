@@ -1,5 +1,7 @@
 package br.thullyoo.twitter_clone_backend.security;
 
+import br.thullyoo.twitter_clone_backend.domain.entity.User;
+import br.thullyoo.twitter_clone_backend.domain.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,6 +19,9 @@ public class JWTService {
     @Autowired
     private JwtEncoder encoder;
 
+    @Autowired
+    private UserRepository userRepository;
+
     public String generateToken(Authentication authentication){
         Instant now = Instant.now();
         Long expiresAt = 4000L;
@@ -25,11 +30,13 @@ public class JWTService {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(" "));
 
+        User user = userRepository.findByNickname(authentication.getName()).get();
+
         var claims = JwtClaimsSet.builder()
                 .issuedAt(now)
                 .expiresAt(now.plusSeconds(expiresAt))
                 .issuer("jwt-service")
-                .subject(authentication.getName())
+                .subject(user.toString())
                 .claim("scope", scopes)
                 .build();
 
