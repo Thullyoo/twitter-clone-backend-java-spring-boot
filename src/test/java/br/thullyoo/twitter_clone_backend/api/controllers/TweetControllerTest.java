@@ -65,6 +65,22 @@ class TweetControllerTest {
             assertEquals(tweetRequest.text(), tweetRequestCaptor.getValue().text());
         }
 
+        @Test
+        void shouldReturnResponseBodyCorrectly() {
+            //ARRANGE
+            var tweetRequest = TweetRequestFactory.build();
+            var tweetResponse =  TweetResponseFactory.build();
+            doReturn(tweetResponse).when(tweetService).registerTweet(tweetRequest);
+
+            //ACT
+            var response =  tweetController.registerTweet(tweetRequest);
+
+            //ASSERT
+            assertNotNull(response);
+            assertEquals(tweetResponse.text(), response.getBody().text());
+            assertEquals(tweetResponse.id(), response.getBody().id());
+            assertEquals(tweetResponse.nickname(), response.getBody().nickname());
+        }
     }
 
 }
