@@ -5,9 +5,12 @@ import br.thullyoo.twitter_clone_backend.api.dto.TweetResponse;
 import br.thullyoo.twitter_clone_backend.domain.service.TweetServiceImpl;
 import br.thullyoo.twitter_clone_backend.factory.TweetRequestFactory;
 import br.thullyoo.twitter_clone_backend.factory.TweetResponseFactory;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -26,6 +29,9 @@ class TweetControllerTest {
     @InjectMocks
     TweetController tweetController;
 
+    @Captor
+    ArgumentCaptor<TweetRequest> tweetRequestCaptor;
+
     @Nested
     class registerTweet{
 
@@ -43,7 +49,21 @@ class TweetControllerTest {
             assertEquals(HttpStatus.OK, response.getStatusCode());
         }
 
+        @Test
+        void shouldPassCorrectParamtersToService() {
+            //ARRANGE
+            var tweetRequest = TweetRequestFactory.build();
+            doReturn(TweetResponseFactory.build())
+                    .when(tweetService)
+                    .registerTweet(tweetRequestCaptor.capture());
 
+            //ACT
+            var response =  tweetController.registerTweet(tweetRequest);
+
+            //ASSERT
+            assertEquals(tweetRequest.id_user(), tweetRequestCaptor.getValue().id_user());
+            assertEquals(tweetRequest.text(), tweetRequestCaptor.getValue().text());
+        }
 
     }
 
