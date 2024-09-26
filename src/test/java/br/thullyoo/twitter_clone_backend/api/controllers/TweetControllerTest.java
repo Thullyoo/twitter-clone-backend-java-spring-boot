@@ -14,11 +14,14 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TweetControllerTest {
@@ -47,6 +50,8 @@ class TweetControllerTest {
 
             //ASSERT
             assertEquals(HttpStatus.OK, response.getStatusCode());
+            verify(tweetService, times(1)).registerTweet(tweetRequest);
+
         }
 
         @Test
@@ -63,6 +68,8 @@ class TweetControllerTest {
             //ASSERT
             assertEquals(tweetRequest.id_user(), tweetRequestCaptor.getValue().id_user());
             assertEquals(tweetRequest.text(), tweetRequestCaptor.getValue().text());
+            verify(tweetService, times(1)).registerTweet(tweetRequest);
+
         }
 
         @Test
@@ -80,7 +87,43 @@ class TweetControllerTest {
             assertEquals(tweetResponse.text(), response.getBody().text());
             assertEquals(tweetResponse.id(), response.getBody().id());
             assertEquals(tweetResponse.nickname(), response.getBody().nickname());
+            verify(tweetService, times(1)).registerTweet(tweetRequest);
         }
+    }
+
+    @Nested
+    class getAllTweets{
+
+        @Test
+        void shouldReturnHttpOK(){
+            //ARRANGE
+            var tweetResponse = TweetResponseFactory.build();
+            var pageResponse = new PageImpl<>(List.of(tweetResponse));
+            doReturn(pageResponse).when(tweetService).getAllTweets();
+            //ACT
+            var response =  tweetController.getAllTweets();
+            //ASSERT
+            assertNotNull(response);
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            verify(tweetService, times(1)).getAllTweets();
+
+        }
+
+        @Test
+        void shouldReturnResponseBodyCorrectly() {
+            //ARRANGE
+            var tweetResponse = TweetResponseFactory.build();
+            var pageResponse = new PageImpl<>(List.of(tweetResponse));
+            doReturn(pageResponse).when(tweetService).getAllTweets();
+            //ACT
+            var response =  tweetController.getAllTweets();
+            //ASSERT
+            assertEquals(response.getBody().getContent().get(0).nickname(), pageResponse.getContent().get(0).nickname());
+            assertEquals(response.getBody().getContent().get(0).text(), pageResponse.getContent().get(0).text());
+            assertEquals(response.getBody().getContent().get(0).id(), pageResponse.getContent().get(0).id());
+            verify(tweetService, times(1)).getAllTweets();
+        }
+
     }
 
 }
