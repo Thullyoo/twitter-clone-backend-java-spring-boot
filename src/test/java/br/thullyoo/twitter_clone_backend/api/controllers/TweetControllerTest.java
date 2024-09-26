@@ -18,6 +18,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,6 +35,12 @@ class TweetControllerTest {
 
     @Captor
     ArgumentCaptor<TweetRequest> tweetRequestCaptor;
+
+    @Captor
+    ArgumentCaptor<Integer> integerCaptor;
+
+    @Captor
+    ArgumentCaptor<UUID> uuidCaptor;
 
     @Nested
     class registerTweet{
@@ -123,6 +130,42 @@ class TweetControllerTest {
             assertEquals(response.getBody().getContent().get(0).id(), pageResponse.getContent().get(0).id());
             verify(tweetService, times(1)).getAllTweets();
         }
+
+    }
+
+    @Nested
+    class deleteTweet{
+
+        @Test
+        void shouldReturnHttpNoContent() {
+            //ARRANGE
+            int tweet_id = 0;
+            UUID user_id = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
+            //ACT
+            var response = tweetController.deleteTweet(tweet_id,user_id);
+            //ASSERT
+            assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+            verify(tweetService, times(1)).deleteTweet(tweet_id, user_id);
+        }
+
+        @Test
+        void shouldPassCorrectParamtersToService() {
+            //ARRANGE
+            int tweet_id = 0;
+            UUID user_id = UUID.fromString("550e8400-e29b-41d4-a716-446655440000");
+            doNothing()
+                    .when(tweetService)
+                    .deleteTweet(integerCaptor.capture(), uuidCaptor.capture());
+
+            //ACT
+            var response =  tweetController.deleteTweet(tweet_id, user_id);
+
+            //ASSERT
+            assertEquals(tweet_id, integerCaptor.getValue());
+            assertEquals(user_id, uuidCaptor.getValue());
+            verify(tweetService, times(1)).deleteTweet(tweet_id, user_id);
+        }
+
 
     }
 
