@@ -8,6 +8,8 @@ import br.thullyoo.twitter_clone_backend.domain.entity.Role;
 import br.thullyoo.twitter_clone_backend.domain.entity.User;
 import br.thullyoo.twitter_clone_backend.domain.repository.RoleRepository;
 import br.thullyoo.twitter_clone_backend.domain.repository.UserRepository;
+import br.thullyoo.twitter_clone_backend.exceptions.EmailAlreadyRegisteredException;
+import br.thullyoo.twitter_clone_backend.exceptions.NicknameAlreadyRegisteredException;
 import br.thullyoo.twitter_clone_backend.security.JWTService;
 import br.thullyoo.twitter_clone_backend.service.UserService;
 import jakarta.transaction.Transactional;
@@ -43,10 +45,10 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserResponse registerUser(UserRequest userRequest) {
         if(this.userRepository.findByEmail(userRequest.email()).isPresent()){
-            throw new RuntimeException("Email já cadastrado");
+            throw new EmailAlreadyRegisteredException("Email já cadastrado");
         }
         if (this.userRepository.findByNickname(userRequest.nickname()).isPresent()){
-            throw new RuntimeException("Nickname já cadastrado");
+            throw new NicknameAlreadyRegisteredException("Nickname já cadastrado");
         }
         User user = userMapper.toUser(userRequest);
         user.setPassword(passwordEncoder.encode(userRequest.password()));

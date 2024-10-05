@@ -7,6 +7,8 @@ import br.thullyoo.twitter_clone_backend.domain.entity.Tweet;
 import br.thullyoo.twitter_clone_backend.domain.entity.User;
 import br.thullyoo.twitter_clone_backend.domain.repository.TweetRepository;
 import br.thullyoo.twitter_clone_backend.domain.repository.UserRepository;
+import br.thullyoo.twitter_clone_backend.exceptions.TweetNotFoundException;
+import br.thullyoo.twitter_clone_backend.exceptions.UserNotFoundException;
 import br.thullyoo.twitter_clone_backend.service.TweetService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +40,7 @@ public class TweetServiceImpl implements TweetService {
 
         Optional<User> user = this.userRepository.findById(request.id_user());
         if (user.isEmpty()){
-            throw new RuntimeException("Usuário não encontrado");
+            throw new UserNotFoundException("Usuário não encontrado");
         }
 
         Tweet tweet = tweetMapper.toTweet(request);
@@ -63,14 +65,14 @@ public class TweetServiceImpl implements TweetService {
     public void deleteTweet(int tweet_id, UUID user_id) {
         Optional<User> user = userRepository.findById(user_id);
         if (user.isEmpty()){
-            throw new RuntimeException("Usuário não encontrado");
+            throw new UserNotFoundException("Usuário não encontrado");
         }
         Optional<Tweet> tweet = user.get().getTweets().stream()
                 .filter(tweet1 -> tweet1.getId() == tweet_id)
                 .findFirst();
 
         if (tweet.isEmpty()){
-            throw new RuntimeException("Tweet inexistente ou de outra pessoa");
+            throw new TweetNotFoundException("Tweet inexistente ou pertence a outra pessoa");
         }
 
         tweetRepository.delete(tweet.get());
