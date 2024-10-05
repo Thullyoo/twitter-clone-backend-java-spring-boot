@@ -28,11 +28,23 @@ import java.security.interfaces.RSAPublicKey;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@SecurityScheme(name = SecurityConfig.SECURITY, type = SecuritySchemeType.HTTP, bearerFormat = "JWT", scheme = "bearer",     description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\""
+@SecurityScheme(
+        name = SecurityConfig.AUTH,
+        type = SecuritySchemeType.HTTP,
+        scheme = "basic",
+        description = "Basic Authentication with username and password"
+)
+@SecurityScheme(
+        name = SecurityConfig.BEARER,
+        type = SecuritySchemeType.HTTP,
+        scheme = "bearer",
+        bearerFormat = "JWT",
+        description = "JWT Authorization header using the Bearer scheme"
 )
 public class SecurityConfig {
 
-    public static final String SECURITY = "bearerAuth";
+    public static final String BEARER= "bearerAuth";
+    public static final String AUTH= "basicAuth";
 
     @Value("${jwt.public.key}")
     private RSAPublicKey publicKey;

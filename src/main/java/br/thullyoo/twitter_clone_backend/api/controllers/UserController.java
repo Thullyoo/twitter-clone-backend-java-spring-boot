@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @Tag(name = "User", description = "Controller for registering and logging in Users")
-@SecurityRequirement(name = SecurityConfig.SECURITY)
 public class UserController {
 
     @Autowired
@@ -33,6 +32,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
+    @SecurityRequirement(name = SecurityConfig.AUTH)
     @Operation(summary = "User Login", description = "Method for user login")
     @ApiResponse(responseCode = "200", description = "Login successful")
     @ApiResponse(responseCode = "401", description = "Incorrect username or password")

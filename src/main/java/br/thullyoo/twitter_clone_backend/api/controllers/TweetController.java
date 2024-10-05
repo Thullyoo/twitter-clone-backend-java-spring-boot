@@ -21,7 +21,7 @@ import java.util.UUID;
 @RequestMapping("/tweet")
 @CrossOrigin(origins = "http://localhost:4200")
 @Tag(name = "Tweet", description = "Controller for registering, deleting, and retrieving tweets")
-@SecurityRequirement(name = SecurityConfig.SECURITY)
+@SecurityRequirement(name = SecurityConfig.BEARER)
 public class TweetController {
 
     @Autowired
