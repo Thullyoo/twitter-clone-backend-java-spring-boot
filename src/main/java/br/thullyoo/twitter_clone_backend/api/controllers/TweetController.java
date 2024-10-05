@@ -2,9 +2,11 @@ package br.thullyoo.twitter_clone_backend.api.controllers;
 
 import br.thullyoo.twitter_clone_backend.api.dto.TweetRequest;
 import br.thullyoo.twitter_clone_backend.api.dto.TweetResponse;
+import br.thullyoo.twitter_clone_backend.config.SecurityConfig;
 import br.thullyoo.twitter_clone_backend.domain.service.TweetServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,6 +21,7 @@ import java.util.UUID;
 @RequestMapping("/tweet")
 @CrossOrigin(origins = "http://localhost:4200")
 @Tag(name = "Tweet", description = "Controller for registering, deleting, and retrieving tweets")
+@SecurityRequirement(name = SecurityConfig.SECURITY)
 public class TweetController {
 
     @Autowired

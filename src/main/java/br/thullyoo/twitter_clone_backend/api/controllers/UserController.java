@@ -3,9 +3,11 @@ package br.thullyoo.twitter_clone_backend.api.controllers;
 import br.thullyoo.twitter_clone_backend.api.dto.JwtResponse;
 import br.thullyoo.twitter_clone_backend.api.dto.UserRequest;
 import br.thullyoo.twitter_clone_backend.api.dto.UserResponse;
+import br.thullyoo.twitter_clone_backend.config.SecurityConfig;
 import br.thullyoo.twitter_clone_backend.domain.service.UserServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
 @Tag(name = "User", description = "Controller for registering and logging in Users")
+@SecurityRequirement(name = SecurityConfig.SECURITY)
 public class UserController {
 
     @Autowired
